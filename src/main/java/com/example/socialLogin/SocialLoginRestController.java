@@ -10,7 +10,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-
 @RestController
 @RequestMapping(value = "/login/oauth2/code")
 public class SocialLoginRestController {
@@ -31,8 +30,7 @@ public class SocialLoginRestController {
                 "https://nid.naver.com/oauth2.0/token",
                 HttpMethod.POST,
                 request,
-                String.class
-        );
+                String.class);
     }
 
     private ResponseEntity<String> requestProfile(HttpEntity request) {
@@ -41,13 +39,12 @@ public class SocialLoginRestController {
                 "https://openapi.naver.com/v1/nid/me",
                 HttpMethod.POST,
                 request,
-                String.class
-        );
+                String.class);
     }
 
     private HttpEntity<MultiValueMap<String, String>> generateProfileRequest(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer "+ accessToken);
+        headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         return new HttpEntity<>(headers);
     }
