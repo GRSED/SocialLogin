@@ -36,14 +36,19 @@ public class SocialLoginController {
                 + "&redirect_uri=http%3a%2f%2flocalhost%3a8080%2flogin%2foauth2%2fcode%2fgoogle&scope=email profile&state=" + state;
     }
 
-    @GetMapping(value = "/naverlogin")
-    public String naverlogin() {
+    @GetMapping(value = "naverlogin")
+    public String naverLogin() {
         return "naverlogin";
     }
 
-    @GetMapping(value = "/naver2")
-    public String html() {
+    @GetMapping(value = "naver2")
+    public String naverProfile() {
         return "callback";
+    }
+
+    @GetMapping(value = "kakaologin")
+    public String kakaoLogin() {
+        return "kakaologin";
     }
 
     public String generateState()
