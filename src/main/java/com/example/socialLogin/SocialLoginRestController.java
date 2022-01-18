@@ -10,20 +10,23 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpSession;
+
 import static com.example.socialLogin.Constant.*;
 
 @RestController
-@RequestMapping(value = "/login/oauth2/code")
+@RequestMapping(value = "/login/oauth2/code/")
 public class SocialLoginRestController {
 
-    @GetMapping(value = "/naver")
-    public String naver(@RequestParam("code") String code, @RequestParam("state") String state) {
-        JSONObject jsonObject = new JSONObject(requestAccessTokenNaver(generateAuthCodeRequestNaver(code, state)).getBody());
-        String accessToken = jsonObject.getString("access_token");
-        return requestProfileNaver(generateProfileRequestNaver(accessToken)).getBody();
+    @GetMapping(value = "naver")
+    public String naver(@RequestParam("code") String code, @RequestParam("state") String state, HttpSession session) {
+        if (!session.getAttribute("storedState").equals(state)) return "";
+            JSONObject jsonObject = new JSONObject(requestAccessTokenNaver(requiredForRequestAccessTokenNaver(code)).getBody());
+            String accessToken = jsonObject.getString("access_token");
+            return requestProfileNaver(generateProfileRequestNaver(accessToken)).getBody();
     }
 
-    private HttpEntity<MultiValueMap<String, String>> generateAuthCodeRequestNaver(String code, String state) {
+    private HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessTokenNaver(String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -61,8 +64,9 @@ public class SocialLoginRestController {
                 String.class);
     }
 
-    @GetMapping(value = "/kakao")
-    public String kakao(@RequestParam("code") String code) {
+    @GetMapping(value = "kakao")
+    public String kakao(@RequestParam("code") String code, @RequestParam("state") String state, HttpSession session) {
+        if (!session.getAttribute("storedState").equals(state)) return "";
         JSONObject jsonObject = new JSONObject(requestAccessTokenKakao(generateAuthCodeRequestKakao(code)).getBody());
         String accessToken = jsonObject.getString("access_token");
         return requestProfileKakao(generateProfileRequestKakao(accessToken)).getBody();
@@ -107,8 +111,9 @@ public class SocialLoginRestController {
                 String.class);
     }
 
-    @GetMapping(value = "/google")
-    public String google(@RequestParam("code") String code) {
+    @GetMapping(value = "google")
+    public String google(@RequestParam("code") String code, @RequestParam("state") String state, HttpSession session) {
+        if (!session.getAttribute("storedState").equals(state)) return "";
         JSONObject jsonObject = new JSONObject(requestAccessTokenGoogle(generateAuthCodeRequestGoogle(code)).getBody());
         String accessToken = jsonObject.getString("access_token");
         return requestProfileGoogle(generateProfileRequestGoogle(accessToken)).getBody();
