@@ -1,6 +1,7 @@
 package com.example.socialLogin.service;
 
 import com.example.socialLogin.SocialLoginInterface;
+import com.example.socialLogin.dto.Platform;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,30 +12,27 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static com.example.socialLogin.Constant.KAKAO_CLIENT_ID;
-import static com.example.socialLogin.Constant.KAKAO_CLIENT_SECRET;
-
 @Service
-public class KakaoSocialLoginService implements SocialLoginInterface {
+public class RequestProfileApiService implements SocialLoginInterface {
     @Override
-    public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
+    public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code, Platform platform) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", KAKAO_CLIENT_ID);
-        params.add("client_secret", KAKAO_CLIENT_SECRET);
-        params.add("redirect_uri", "http://localhost:8080/login/oauth2/code/kakao");
+        params.add("client_id", platform.getClientId());
+        params.add("client_secret", platform.getClientSecret());
+        params.add("redirect_uri", platform.getRedirectUri());
         params.add("code", code);
         return new HttpEntity<>(params, headers);
     }
 
     @Override
-    public ResponseEntity<String> requestAccessToken(HttpEntity request) {
+    public ResponseEntity<String> requestAccessToken(HttpEntity request, Platform platform) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "https://kauth.kakao.com/oauth/token",
+                platform.getRequestAccessTokenUri(),
                 HttpMethod.POST,
                 request,
                 String.class
@@ -50,19 +48,19 @@ public class KakaoSocialLoginService implements SocialLoginInterface {
     }
 
     @Override
-    public ResponseEntity<String> requestApi(HttpEntity request) {
+    public ResponseEntity<String> requestApi(HttpEntity request, Platform platform) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "https://kapi.kakao.com/v2/user/me",
+                platform.getRequestProfileApiUri(),
                 HttpMethod.POST,
                 request,
                 String.class
         );
     }
 
-    public String requestProfile(String code) {
-        JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
+    public String requestProfile(String code, Platform platform) {
+        JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code, platform), platform).getBody());
         String accessToken = jsonObject.getString("access_token");
-        return requestApi(requiredForRequestApi(accessToken)).getBody();
+        return requestApi(requiredForRequestApi(accessToken), platform).getBody();
     }
 }

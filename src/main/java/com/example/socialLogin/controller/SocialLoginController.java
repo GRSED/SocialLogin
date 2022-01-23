@@ -17,7 +17,7 @@ public class SocialLoginController {
         String state = generateState();
         session.setAttribute("storedState", state);
         return "redirect:https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + NAVER_CLIENT_ID
-                + "&redirect_uri=http%3a%2f%2flocalhost%3a8080%2flogin%2foauth2%2fcode%2fnaver&state=" + state;
+                + "&redirect_uri=" + NAVER_REDIRECT_URI + "&state=" + state;
     }
 
     @GetMapping(value = "kakaoLoginUrl")
@@ -25,7 +25,7 @@ public class SocialLoginController {
         String state = generateState();
         session.setAttribute("storedState", state);
         return "redirect:https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + KAKAO_CLIENT_ID
-                + "&redirect_uri=http%3a%2f%2flocalhost%3a8080%2flogin%2foauth2%2fcode%2fkakao&state=" + state;
+                + "&redirect_uri=" + KAKAO_REDIRECT_URI + "&state=" + state;
     }
 
     @GetMapping(value = "googleLoginUrl")
@@ -33,7 +33,7 @@ public class SocialLoginController {
         String state = generateState();
         session.setAttribute("storedState", state);
         return "redirect:https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=" + GOOGLE_CLIENT_ID
-                + "&redirect_uri=http%3a%2f%2flocalhost%3a8080%2flogin%2foauth2%2fcode%2fgoogle&scope=email profile&state=" + state;
+                + "&redirect_uri=" + GOOGLE_REDIRECT_URI + "&scope=email profile&state=" + state;
     }
 
     @GetMapping(value = "naverlogin")
