@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
 public interface SocialLoginInterface {
-
     HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code);
 
     ResponseEntity<String> requestAccessToken(HttpEntity request);
