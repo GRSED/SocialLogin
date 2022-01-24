@@ -2,9 +2,6 @@ package com.example.socialLogin.controller;
 
 import com.example.socialLogin.SocialLoginPlatform;
 import com.example.socialLogin.service.SocialLoginInterface;
-import com.example.socialLogin.service.GoogleSocialLoginService;
-import com.example.socialLogin.service.KakaoSocialLoginService;
-import com.example.socialLogin.service.NaverSocialLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

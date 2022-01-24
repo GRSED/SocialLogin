@@ -1,7 +1,7 @@
 package com.example.socialLogin.service;
 
-import com.example.socialLogin.SocialLoginPlatform;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -15,6 +15,21 @@ import static com.example.socialLogin.Constant.*;
 
 @Service
 public class GoogleSocialLoginService implements SocialLoginInterface {
+    @Value("${google.client.id}")
+    String clientId;
+
+    @Value("${google.client.secret}")
+    String clientSecret;
+
+    @Value("${google.redirect.uri}")
+    String redirectUri;
+
+    @Value("${google.request.access.token.uri}")
+    String requestAccessTokenUri;
+
+    @Value("${google.request.profile.api.uri}")
+    String requestProfileApiUri;
+
     @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
@@ -22,9 +37,9 @@ public class GoogleSocialLoginService implements SocialLoginInterface {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", GOOGLE_CLIENT_ID);
-        params.add("client_secret", GOOGLE_CLIENT_SECRET);
-        params.add("redirect_uri", GOOGLE_REDIRECT_URI);
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
+        params.add("redirect_uri", redirectUri);
         params.add("code", code);
         return new HttpEntity<>(params, headers);
     }
@@ -33,7 +48,7 @@ public class GoogleSocialLoginService implements SocialLoginInterface {
     public ResponseEntity<String> requestAccessToken(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                GOOGLE_REQUEST_ACCESS_TOKEN_URI,
+                requestAccessTokenUri,
                 HttpMethod.POST,
                 request,
                 String.class
@@ -51,7 +66,7 @@ public class GoogleSocialLoginService implements SocialLoginInterface {
     public ResponseEntity<String> requestApi(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                GOOGLE_REQUEST_PROFILE_API_URI,
+                requestProfileApiUri,
                 HttpMethod.GET,
                 request,
                 String.class
