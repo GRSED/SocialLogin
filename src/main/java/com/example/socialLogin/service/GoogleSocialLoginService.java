@@ -1,6 +1,5 @@
 package com.example.socialLogin.service;
 
-import com.example.socialLogin.SocialLoginInterface;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,8 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static com.example.socialLogin.Constant.GOOGLE_CLIENT_ID;
-import static com.example.socialLogin.Constant.GOOGLE_CLIENT_SECRET;
+import static com.example.socialLogin.Constant.*;
 
 @Service
 public class GoogleSocialLoginService implements SocialLoginInterface {
@@ -25,7 +23,7 @@ public class GoogleSocialLoginService implements SocialLoginInterface {
         params.add("grant_type", "authorization_code");
         params.add("client_id", GOOGLE_CLIENT_ID);
         params.add("client_secret", GOOGLE_CLIENT_SECRET);
-        params.add("redirect_uri", "http://localhost:8080/login/oauth2/code/google");
+        params.add("redirect_uri", GOOGLE_REDIRECT_URI);
         params.add("code", code);
         return new HttpEntity<>(params, headers);
     }
@@ -34,7 +32,7 @@ public class GoogleSocialLoginService implements SocialLoginInterface {
     public ResponseEntity<String> requestAccessToken(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "https://oauth2.googleapis.com/token",
+                GOOGLE_REQUEST_ACCESS_TOKEN_URI,
                 HttpMethod.POST,
                 request,
                 String.class
@@ -52,13 +50,14 @@ public class GoogleSocialLoginService implements SocialLoginInterface {
     public ResponseEntity<String> requestApi(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "https://www.googleapis.com/oauth2/v2/userinfo",
+                GOOGLE_REQUEST_PROFILE_API_URI,
                 HttpMethod.GET,
                 request,
                 String.class
         );
     }
 
+    @Override
     public String requestProfile(String code) {
         JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
         String accessToken = jsonObject.getString("access_token");

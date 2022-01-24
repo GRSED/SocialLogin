@@ -1,6 +1,5 @@
 package com.example.socialLogin.service;
 
-import com.example.socialLogin.SocialLoginInterface;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,8 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static com.example.socialLogin.Constant.NAVER_CLIENT_ID;
-import static com.example.socialLogin.Constant.NAVER_CLIENT_SECRET;
+import static com.example.socialLogin.Constant.*;
 
 @Service
 public class NaverSocialLoginService implements SocialLoginInterface {
@@ -34,7 +32,7 @@ public class NaverSocialLoginService implements SocialLoginInterface {
     public ResponseEntity<String> requestAccessToken(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "https://nid.naver.com/oauth2.0/token",
+                NAVER_REQUEST_ACCESS_TOKEN_URI,
                 HttpMethod.POST,
                 request,
                 String.class
@@ -53,13 +51,14 @@ public class NaverSocialLoginService implements SocialLoginInterface {
     public ResponseEntity<String> requestApi(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "https://openapi.naver.com/v1/nid/me",
+                NAVER_REQUEST_PROFILE_API_URI,
                 HttpMethod.POST,
                 request,
                 String.class
         );
     }
 
+    @Override
     public String requestProfile(String code) {
         JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
         String accessToken = jsonObject.getString("access_token");

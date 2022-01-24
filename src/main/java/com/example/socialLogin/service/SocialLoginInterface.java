@@ -1,4 +1,4 @@
-package com.example.socialLogin;
+package com.example.socialLogin.service;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -13,4 +13,6 @@ public interface SocialLoginInterface {
     HttpEntity<MultiValueMap<String, String>> requiredForRequestApi(String accessToken);
 
     ResponseEntity<String> requestApi(HttpEntity request);
+
+    String requestProfile(String code);
 }

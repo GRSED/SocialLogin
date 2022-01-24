@@ -1,6 +1,5 @@
 package com.example.socialLogin.service;
 
-import com.example.socialLogin.SocialLoginInterface;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,8 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static com.example.socialLogin.Constant.KAKAO_CLIENT_ID;
-import static com.example.socialLogin.Constant.KAKAO_CLIENT_SECRET;
+import static com.example.socialLogin.Constant.*;
 
 @Service
 public class KakaoSocialLoginService implements SocialLoginInterface {
@@ -25,7 +23,7 @@ public class KakaoSocialLoginService implements SocialLoginInterface {
         params.add("grant_type", "authorization_code");
         params.add("client_id", KAKAO_CLIENT_ID);
         params.add("client_secret", KAKAO_CLIENT_SECRET);
-        params.add("redirect_uri", "http://localhost:8080/login/oauth2/code/kakao");
+        params.add("redirect_uri", KAKAO_REDIRECT_URI);
         params.add("code", code);
         return new HttpEntity<>(params, headers);
     }
@@ -34,7 +32,7 @@ public class KakaoSocialLoginService implements SocialLoginInterface {
     public ResponseEntity<String> requestAccessToken(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "https://kauth.kakao.com/oauth/token",
+                KAKAO_REQUEST_ACCESS_TOKEN_URI,
                 HttpMethod.POST,
                 request,
                 String.class
@@ -53,13 +51,14 @@ public class KakaoSocialLoginService implements SocialLoginInterface {
     public ResponseEntity<String> requestApi(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                "https://kapi.kakao.com/v2/user/me",
+                KAKAO_REQUEST_PROFILE_API_URI,
                 HttpMethod.POST,
                 request,
                 String.class
         );
     }
 
+    @Override
     public String requestProfile(String code) {
         JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
         String accessToken = jsonObject.getString("access_token");
