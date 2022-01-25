@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import static com.example.socialLogin.Constant.*;
 
 @Service
-public class KakaoSocialLoginService implements SocialLoginInterface {
+public class KakaoSocialLoginService extends SocialLoginInterface {
     @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
@@ -58,10 +58,4 @@ public class KakaoSocialLoginService implements SocialLoginInterface {
         );
     }
 
-    @Override
-    public String requestProfile(String code) {
-        JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
-        String accessToken = jsonObject.getString("access_token");
-        return requestApi(requiredForRequestApi(accessToken)).getBody();
-    }
 }

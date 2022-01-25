@@ -1,17 +1,22 @@
 package com.example.socialLogin.service;
 
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 
-public interface SocialLoginInterface {
-    HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code);
+public abstract class SocialLoginInterface {
+    abstract HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code);
 
-    ResponseEntity<String> requestAccessToken(HttpEntity request);
+    abstract ResponseEntity<String> requestAccessToken(HttpEntity request);
 
-    HttpEntity<MultiValueMap<String, String>> requiredForRequestApi(String accessToken);
+    abstract HttpEntity<MultiValueMap<String, String>> requiredForRequestApi(String accessToken);
 
-    ResponseEntity<String> requestApi(HttpEntity request);
+    abstract ResponseEntity<String> requestApi(HttpEntity request);
 
-    String requestProfile(String code);
+    public String requestProfile(String code) {
+        JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
+        String accessToken = jsonObject.getString("access_token");
+        return requestApi(requiredForRequestApi(accessToken)).getBody();
+    }
 }

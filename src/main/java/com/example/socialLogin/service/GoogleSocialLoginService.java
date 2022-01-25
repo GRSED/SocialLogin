@@ -1,6 +1,6 @@
 package com.example.socialLogin.service;
 
-import org.json.JSONObject;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,10 +11,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static com.example.socialLogin.Constant.*;
-
 @Service
-public class GoogleSocialLoginService implements SocialLoginInterface {
+public class GoogleSocialLoginService extends SocialLoginInterface {
     @Value("${google.client.id}")
     String clientId;
 
@@ -29,6 +27,10 @@ public class GoogleSocialLoginService implements SocialLoginInterface {
 
     @Value("${google.request.profile.api.uri}")
     String requestProfileApiUri;
+
+    GoogleSocialLoginService() {
+
+    }
 
     @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
@@ -73,10 +75,4 @@ public class GoogleSocialLoginService implements SocialLoginInterface {
         );
     }
 
-    @Override
-    public String requestProfile(String code) {
-        JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
-        String accessToken = jsonObject.getString("access_token");
-        return requestApi(requiredForRequestApi(accessToken)).getBody();
-    }
 }

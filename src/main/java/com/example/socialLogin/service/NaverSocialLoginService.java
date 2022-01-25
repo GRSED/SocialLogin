@@ -12,8 +12,8 @@ import org.springframework.web.client.RestTemplate;
 
 import static com.example.socialLogin.Constant.*;
 
-@Service
-public class NaverSocialLoginService implements SocialLoginInterface {
+@Service()
+public class NaverSocialLoginService extends SocialLoginInterface {
 
     @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
@@ -58,10 +58,4 @@ public class NaverSocialLoginService implements SocialLoginInterface {
         );
     }
 
-    @Override
-    public String requestProfile(String code) {
-        JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
-        String accessToken = jsonObject.getString("access_token");
-        return requestApi(requiredForRequestApi(accessToken)).getBody();
-    }
 }
