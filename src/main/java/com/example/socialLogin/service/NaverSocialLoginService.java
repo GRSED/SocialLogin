@@ -13,9 +13,8 @@ import org.springframework.web.client.RestTemplate;
 import static com.example.socialLogin.Constant.*;
 
 @Service()
-public class NaverSocialLoginService extends SocialLoginInterface {
+public class NaverSocialLoginService {
 
-    @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -28,7 +27,6 @@ public class NaverSocialLoginService extends SocialLoginInterface {
         return new HttpEntity<>(params, headers);
     }
 
-    @Override
     public ResponseEntity<String> requestAccessToken(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
@@ -39,7 +37,6 @@ public class NaverSocialLoginService extends SocialLoginInterface {
         );
     }
 
-    @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestApi(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -47,7 +44,6 @@ public class NaverSocialLoginService extends SocialLoginInterface {
         return new HttpEntity<>(headers);
     }
 
-    @Override
     public ResponseEntity<String> requestApi(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(

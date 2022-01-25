@@ -1,7 +1,6 @@
 package com.example.socialLogin.service;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.socialLogin.PlatformConfig;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,24 +11,20 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class GoogleSocialLoginService extends SocialLoginInterface {
-    @Value("${google.client.id}")
-    String clientId;
+public class SocialLoginService extends SocialLoginInterface {
 
-    @Value("${google.client.secret}")
-    String clientSecret;
+    private String clientId;
+    private String clientSecret;
+    private String redirectUri;
+    private String requestAccessTokenUri;
+    private String requestProfileApiUri;
 
-    @Value("${google.redirect.uri}")
-    String redirectUri;
-
-    @Value("${google.request.access.token.uri}")
-    String requestAccessTokenUri;
-
-    @Value("${google.request.profile.api.uri}")
-    String requestProfileApiUri;
-
-    GoogleSocialLoginService() {
-
+    public SocialLoginService(PlatformConfig platformConfig) {
+        this.clientId = platformConfig.getClientId();
+        this.clientSecret = platformConfig.getClientSecret();
+        this.redirectUri = platformConfig.getRedirectUri();
+        this.requestAccessTokenUri = platformConfig.getRequestAccessTokenUri();
+        this.requestProfileApiUri = platformConfig.getRequestProfileApiUri();
     }
 
     @Override

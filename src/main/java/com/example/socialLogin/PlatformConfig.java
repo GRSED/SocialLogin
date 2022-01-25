@@ -1,10 +1,9 @@
 package com.example.socialLogin;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.Getter;
 
-
+@Getter
 public class PlatformConfig {
-
     private String clientId;
     private String clientSecret;
     private String redirectUri;
