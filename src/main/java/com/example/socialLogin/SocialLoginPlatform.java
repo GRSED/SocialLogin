@@ -4,9 +4,8 @@ import lombok.Getter;
 
 import static com.example.socialLogin.Constant.*;
 
-@Getter
 public enum SocialLoginPlatform {
-    GOOGLE,
+    NAVER,
     KAKAO,
-    NAVER
+    GOOGLE
 }

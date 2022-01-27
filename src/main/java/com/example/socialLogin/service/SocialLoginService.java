@@ -1,6 +1,7 @@
 package com.example.socialLogin.service;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import lombok.Setter;
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,12 +12,18 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@ConfigurationProperties(prefix = "kakao")
-public class Kakao extends SocialLoginInterface {
-    @Override
+@Setter
+public class SocialLoginService {
+    public String type;
+    public String clientId;
+    public String clientSecret;
+    public String redirectUri;
+    public String requestAccessTokenUri;
+    public String requestProfileApiUri;
+
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Content-type","application/x-www-form-urlencoded");
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
@@ -27,7 +34,6 @@ public class Kakao extends SocialLoginInterface {
         return new HttpEntity<>(params, headers);
     }
 
-    @Override
     public ResponseEntity<String> requestAccessToken(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
@@ -38,7 +44,6 @@ public class Kakao extends SocialLoginInterface {
         );
     }
 
-    @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestApi(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -46,14 +51,29 @@ public class Kakao extends SocialLoginInterface {
         return new HttpEntity<>(headers);
     }
 
-    @Override
     public ResponseEntity<String> requestApi(HttpEntity request) {
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.exchange(
-                requestProfileApiUri,
-                HttpMethod.POST,
-                request,
-                String.class
-        );
+        if (type.equals("google")) {
+            RestTemplate restTemplate = new RestTemplate();
+            return restTemplate.exchange(
+                    requestProfileApiUri,
+                    HttpMethod.GET,
+                    request,
+                    String.class
+            );
+        } else {
+            RestTemplate restTemplate = new RestTemplate();
+            return restTemplate.exchange(
+                    requestProfileApiUri,
+                    HttpMethod.POST,
+                    request,
+                    String.class
+            );
+        }
+    }
+
+    public String requestProfile(String code) {
+        JSONObject jsonObject = new JSONObject(requestAccessToken(requiredForRequestAccessToken(code)).getBody());
+        String accessToken = jsonObject.getString("access_token");
+        return requestApi(requiredForRequestApi(accessToken)).getBody();
     }
 }
