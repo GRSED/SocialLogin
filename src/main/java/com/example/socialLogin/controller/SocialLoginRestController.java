@@ -1,6 +1,5 @@
 package com.example.socialLogin.controller;
 
-import com.example.socialLogin.SocialLoginPlatform;
 import com.example.socialLogin.service.ProviderConfig;
 import com.example.socialLogin.service.SocialLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class SocialLoginRestController {
     public String google(@RequestParam("code") String code, @RequestParam("state") String state,
                          @PathVariable("provider") String provider, HttpSession session) {
         if (!session.getAttribute("storedState").equals(state)) return "";
-        SocialLoginService socialLoginService = providerConfig.getList().get(2);
+        SocialLoginService socialLoginService = providerConfig.getMap().get(provider);
         return socialLoginService.requestProfile(code);
     }
 }
