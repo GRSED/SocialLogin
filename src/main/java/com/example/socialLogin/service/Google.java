@@ -1,6 +1,6 @@
 package com.example.socialLogin.service;
 
-import com.example.socialLogin.PlatformConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,22 +11,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class SocialLoginService extends SocialLoginInterface {
-
-    private String clientId;
-    private String clientSecret;
-    private String redirectUri;
-    private String requestAccessTokenUri;
-    private String requestProfileApiUri;
-
-    public SocialLoginService(PlatformConfig platformConfig) {
-        this.clientId = platformConfig.getClientId();
-        this.clientSecret = platformConfig.getClientSecret();
-        this.redirectUri = platformConfig.getRedirectUri();
-        this.requestAccessTokenUri = platformConfig.getRequestAccessTokenUri();
-        this.requestProfileApiUri = platformConfig.getRequestProfileApiUri();
-    }
-
+@ConfigurationProperties(prefix = "google")
+public class Google extends SocialLoginInterface {
     @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
@@ -69,5 +55,4 @@ public class SocialLoginService extends SocialLoginInterface {
                 String.class
         );
     }
-
 }

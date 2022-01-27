@@ -1,6 +1,6 @@
 package com.example.socialLogin.service;
 
-import org.json.JSONObject;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,33 +10,34 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import static com.example.socialLogin.Constant.*;
-
 @Service
-public class KakaoSocialLoginService {
+@ConfigurationProperties(prefix = "naver")
+public class Naver extends SocialLoginInterface {
+    @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-type","application/x-www-form-urlencoded;charset=utf-8");
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", KAKAO_CLIENT_ID);
-        params.add("client_secret", KAKAO_CLIENT_SECRET);
-        params.add("redirect_uri", KAKAO_REDIRECT_URI);
+        params.add("client_id", clientId);
+        params.add("client_secret", clientSecret);
         params.add("code", code);
         return new HttpEntity<>(params, headers);
     }
 
+    @Override
     public ResponseEntity<String> requestAccessToken(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                KAKAO_REQUEST_ACCESS_TOKEN_URI,
+                requestAccessTokenUri,
                 HttpMethod.POST,
                 request,
                 String.class
         );
     }
 
+    @Override
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestApi(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -44,14 +45,14 @@ public class KakaoSocialLoginService {
         return new HttpEntity<>(headers);
     }
 
+    @Override
     public ResponseEntity<String> requestApi(HttpEntity request) {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.exchange(
-                KAKAO_REQUEST_PROFILE_API_URI,
+                requestProfileApiUri,
                 HttpMethod.POST,
                 request,
                 String.class
         );
     }
-
 }
