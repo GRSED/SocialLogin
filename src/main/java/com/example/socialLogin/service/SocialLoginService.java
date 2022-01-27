@@ -1,6 +1,6 @@
 package com.example.socialLogin.service;
 
-import lombok.Setter;
+import com.example.socialLogin.dto.PlatformDto;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,14 +12,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@Setter
-public class SocialLoginService {
-    public String type;
-    public String clientId;
-    public String clientSecret;
-    public String redirectUri;
-    public String requestAccessTokenUri;
-    public String requestProfileApiUri;
+public class SocialLoginService extends PlatformDto {
 
     public HttpEntity<MultiValueMap<String, String>> requiredForRequestAccessToken(String code) {
         HttpHeaders headers = new HttpHeaders();

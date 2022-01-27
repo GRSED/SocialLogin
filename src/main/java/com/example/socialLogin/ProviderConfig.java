@@ -1,5 +1,6 @@
-package com.example.socialLogin.service;
+package com.example.socialLogin;
 
+import com.example.socialLogin.service.SocialLoginService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

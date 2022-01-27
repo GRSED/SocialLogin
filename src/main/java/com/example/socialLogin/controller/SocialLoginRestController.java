@@ -1,6 +1,6 @@
 package com.example.socialLogin.controller;
 
-import com.example.socialLogin.service.ProviderConfig;
+import com.example.socialLogin.ProviderConfig;
 import com.example.socialLogin.service.SocialLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 public class SocialLoginRestController {
     @Autowired
     ProviderConfig providerConfig;
+
+    SocialLoginService socialLoginService;
 
     @GetMapping(value = "{provider}")
     public String google(@RequestParam("code") String code, @RequestParam("state") String state,
